@@ -12,7 +12,7 @@ const MONGODB_URI = 'mongodb+srv://sivithu:caca@cluster0-abdkp.mongodb.net/test?
 
 
 /* - Liste de tous les Admin - */
-router.get('/admin', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // Connection URL
         const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';

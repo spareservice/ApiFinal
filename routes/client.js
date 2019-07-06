@@ -7,11 +7,28 @@ var multer = require('multer');
 var fs = require('fs');
 var ObjectId = mongo.ObjectId;
 
+var mail = require("./mailRequest");
+
+
 
 const MONGODB_URI = 'mongodb+srv://sivithu:caca@cluster0-abdkp.mongodb.net/test?retryWrites=true'
 
+  function ourdiaRandom()
+{
+    return Math.random().toString(36).substr(2); // remove `0.`
+};
+
+  function token() {
+    return ourdiaRandom() +ourdiaRandom(); // to make it longer
+};
+
+
+
+
+
+
 /* - Liste de tous les clients - */
-router.get('/client', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // Connection URL
         const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
@@ -44,11 +61,12 @@ router.post('/:nom/:prenom/:email/:mdp/:tel/ajoutClient', async (req, res) => {
         var email = req.params.email;
         var tel = req.params.tel;
         var mdp = req.params.mdp;
+        var monToken=  token();
         await client.connect();
         const db = client.db(dbName);
         const col = db.collection('Client');
-        await col.insertMany([{nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel}]);
-        var check = await col.find({nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel}).toArray();
+        await col.insertMany([{nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel , token:monToken ,confirmedToken:false} ]);
+        var check = await col.find({nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel ,token:monToken ,confirmedToken:false}).toArray();
         res.send(check);
         client.close();
     } catch (err) {
@@ -57,8 +75,32 @@ router.post('/:nom/:prenom/:email/:mdp/:tel/ajoutClient', async (req, res) => {
     }
 });
 
+
+router.get('/:email/confirmed', async (req, res) => {
+    try {
+        // Connection URL
+        const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+        // Database Name
+        const dbName = 'spareAPI';
+        const client = new MongoClient(url);
+        var email = req.params.email;
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('Client');
+        var find = await col.find({email: email}).toArray();
+        console.log(find);
+        res.send(find);
+        client.close();
+    } catch (err) {
+        //this will eventually be handled by your error handling middleware
+        console.log(err.stack);
+    }
+});
+
+
+
 // update Clien
-router.put('/client/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
     const id = req.params.id;
     try {
         // Connection URL
@@ -112,7 +154,9 @@ router.delete('/:email/supprimerClient', async (req, res) => {
 });
 
 /* - Check user deja existant - */
-router.get('/:email/checkClient', async (req, res) => {
+router.get('/:email/:id/:token/checkClient', async (req, res) => {
+
+    const id = req.params.id;
     try {
         // Connection URL
         const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
@@ -120,14 +164,27 @@ router.get('/:email/checkClient', async (req, res) => {
         const dbName = 'spareAPI';
         const client = new MongoClient(url);
         var email = req.params.email;
+        var token = req.params.token;
         await client.connect();
         const db = client.db(dbName);
         const col = db.collection('Client');
-        var find = await col.find({email: email}).toArray();
-        console.log(find);
+        var find = await col.findOne({email: email,token:token});
+        var value =  (find.confirmedToken);
+
+            await col.updateOne({
+                _id: new ObjectId(id)
+            }, {
+
+                $set: { "confirmedToken" : false }
+            }, {
+                upsert: true
+            });
+       // mail(find.email,find.id,value);
         res.send(find);
+
         client.close();
     } catch (err) {
+        //this will eventually be handled by your error handling middleware
         //this will eventually be handled by your error handling middleware
         console.log(err.stack);
     }
