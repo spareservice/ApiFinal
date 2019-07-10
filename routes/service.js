@@ -44,7 +44,7 @@ router.put('/Service/:id', async (req, res) => {
         console.log(err.stack);
     }
 });
-router.get('/services', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // Connection URL
         const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';

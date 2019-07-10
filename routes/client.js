@@ -24,9 +24,6 @@ const MONGODB_URI = 'mongodb+srv://sivithu:caca@cluster0-abdkp.mongodb.net/test?
 
 
 
-
-
-
 /* - Liste de tous les clients - */
 router.get('/', async (req, res) => {
     try {
@@ -53,6 +50,7 @@ router.post('/:nom/:prenom/:email/:mdp/:tel/ajoutClient', async (req, res) => {
     try {
         // Connection URL
         const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+
         // Database Name
         const dbName = 'spareAPI';
         const client = new MongoClient(url);
@@ -148,19 +146,17 @@ router.delete('/:email/supprimerClient', async (req, res) => {
         res.send("Client Supprimé");
         client.close();
     } catch (err) {
-        //this will eventually be handled by your error handling middleware
+
         console.log(err.stack);
     }
 });
 
-/* - Check user deja existant - */
+// comfirmation d'un mail
 router.get('/:email/:id/:token/checkClient', async (req, res) => {
 
     const id = req.params.id;
     try {
-        // Connection URL
         const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
-        // Database Name
         const dbName = 'spareAPI';
         const client = new MongoClient(url);
         var email = req.params.email;
@@ -168,28 +164,52 @@ router.get('/:email/:id/:token/checkClient', async (req, res) => {
         await client.connect();
         const db = client.db(dbName);
         const col = db.collection('Client');
-        var find = await col.findOne({email: email,token:token});
+        var find = await col.findOne({email: email});
+        console.log("hell"+find.token);
         var value =  (find.confirmedToken);
-
+        console.log(find.token);
+        if(value == false && token==find.token){
             await col.updateOne({
                 _id: new ObjectId(id)
             }, {
 
-                $set: { "confirmedToken" : false }
+                $set: { "confirmedToken" : true }
             }, {
                 upsert: true
             });
-       // mail(find.email,find.id,value);
-        res.send(find);
+            res.send("votre compte est validé ");
+        }else if (value==true && token==find.token){
+            res.send(" votre compte est deja confirmer ");
+        }else {
+            res.send(" ce lien n'est pas valide ");
+        }
 
         client.close();
     } catch (err) {
-        //this will eventually be handled by your error handling middleware
-        //this will eventually be handled by your error handling middleware
         console.log(err.stack);
     }
 });
+// afficher les compte validé
 
+router.get('/:email/status', async (req, res) => {
+    try {
+        const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+        const dbName = 'spareAPI';
+        const client = new MongoClient(url);
+        var email = req.params.email;
+        var token = req.params.token;
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('Client');
+        var find = await col.findOne({email: email});
+        console.log("hell"+find.token);
+        var value =  (find.confirmedToken);
+        res.send(value);
 
+        client.close();
+    } catch (err) {
+        console.log(err.stack);
+    }
+});
 
 module.exports = router;

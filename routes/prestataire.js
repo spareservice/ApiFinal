@@ -9,10 +9,20 @@ var fs = require('fs');
 var ObjectId = mongo.ObjectId;
 
 
+function ourdiaRandom()
+{
+    return Math.random().toString(36).substr(2); // remove `0.`
+};
+
+function token() {
+    return ourdiaRandom() +ourdiaRandom(); // to make it longer
+};
+
+
 const MONGODB_URI = 'mongodb+srv://sivithu:caca@cluster0-abdkp.mongodb.net/test?retryWrites=true'
 
 /* - Liste de tous les prestataires - */
-router.get('/prestataire', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // Connection URL
         const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
@@ -47,10 +57,11 @@ router.post('/:nom/:prenom/:email/:mdp/:tel/:salaire/ajoutPrestataire', async (r
         var mdp = req.params.mdp;
         var salaire = req.params.salaire;
         await client.connect();
+        var monToken=  token();
         const db = client.db(dbName);
         const col = db.collection('Prestataire');
-        await col.insertMany([{nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel, salaire: salaire}]);
-        var check = await col.find({nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel, salaire: salaire}).toArray();
+        await col.insertMany([{nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel, salaire: salaire ,token:monToken,confirmedToken:false}]);
+        var check = await col.find({nom: nom, prenom: prenom, email: email, mdp: mdp, tel: tel, salaire: salaire,token:monToken,confirmedToken:false}).toArray();
         res.send(check);
         client.close();
     } catch (err) {
@@ -59,6 +70,46 @@ router.post('/:nom/:prenom/:email/:mdp/:tel/:salaire/ajoutPrestataire', async (r
     }
 });
 
+// comfirmation d'un mail
+router.get('/:email/:id/:token/checkClient', async (req, res) => {
+
+    const id = req.params.id;
+    try {
+        const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+        const dbName = 'spareAPI';
+        const client = new MongoClient(url);
+        var email = req.params.email;
+        var token = req.params.token;
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('Prestataire');
+        var find = await col.findOne({email: email});
+        console.log("hell"+find.token);
+        var value =  (find.confirmedToken);
+        console.log(find.token);
+        if(value == false && token==find.token){
+            await col.updateOne({
+                _id: new ObjectId(id)
+            }, {
+                $set: { "confirmedToken" : true }
+            }, {
+                upsert: true
+            });
+            res.send("votre compte est validé ");
+
+        }else if (value==true && token==find.token){
+
+            res.send(" votre compte est deja confirmer ");
+
+        }else {
+            res.send(" ce lien n'est pas valide ");
+        }
+
+        client.close();
+    } catch (err) {
+        console.log(err.stack);
+    }
+});
 
 // update Prestataire
 router.put('/Prestataire/:id', async (req, res) => {

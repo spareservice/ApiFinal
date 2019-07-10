@@ -15,8 +15,8 @@ router.get('/lol', function(req, res, next) {
     res.send('respond with a resource');
 });
 
-/* GET users listing. */
-router.get('/:email/validate', async function (req, res, next) {
+/* GET users validate. */
+router.get('/:email/validate/Client', async function (req, res, next) {
     var json;
     try {
         // Connection URL
@@ -30,11 +30,10 @@ router.get('/:email/validate', async function (req, res, next) {
         const db = client.db(dbName);
         const col = db.collection('Client');
         var find = await col.findOne({email: email});
-
         console.log(find._id);
         console.log(find.token);
-        mail(find.email,find.token,find._id);
-    
+        mail(find.email,find.token,find._id,"client");
+        res.send('votre mail à etait envoyer ');
         client.close();
     } catch (err) {
         //this will eventually be handled by your error handling middleware
@@ -44,7 +43,37 @@ router.get('/:email/validate', async function (req, res, next) {
 
 });
 
-async function mail(email,token,id){
+
+
+/* GET users validate. */
+router.get('/:email/validate/prestatire', async function (req, res, next) {
+    var json;
+    try {
+        // Connection URL
+        const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+        // Database Name
+        const dbName = 'spareAPI';
+        const client = new MongoClient(url);
+        useNewUrlParser: true
+        var email = req.params.email;
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('Prestataire');
+        var find = await col.findOne({email: email});
+        console.log(find._id);
+        console.log(find.token);
+        mail(find.email,find.token,find._id,"prestataire");
+        res.send('votre mail à etait envoyer ');
+        client.close();
+    } catch (err) {
+        //this will eventually be handled by your error handling middleware
+        console.log(err.stack);
+    }
+
+
+});
+
+async function mail(email,token,id ,personn){
     let testAccount = await nodemailer.createTestAccount();
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -64,7 +93,7 @@ async function mail(email,token,id){
         <p><br/><img src="/Users/oualikenourdia/Desktop/stootie.png"/></p> <br>
         <h2> Pour valider votre compte veuilly clicker sur le lien en dessous </h2>
         <br>
-       <button> <a href="http://localhost:3000/client/${email}/${id}/${token}/checkClient"> clicker</a> </button>`,
+       <button> <a href="http://localhost:3000/${personn}/${email}/${id}/${token}/checkClient"> clicker</a> </button>`,
 
 
     });

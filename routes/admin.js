@@ -72,7 +72,7 @@ router.delete('/:email/supprimerAdmin', async (req, res) => {
         const db = client.db(dbName);
         const col = db.collection('ADMin');
         var findClient = await col.find({email: email, mdp: mdp});
-        col.deleteOne({email: email, mdp: mdp});
+        col.deleteOne({email: email});
         res.send("Admin suprimé");
         client.close();
     } catch (err) {
