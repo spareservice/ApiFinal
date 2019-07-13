@@ -8,6 +8,7 @@ var fs = require('fs');
 var ObjectId = mongo.ObjectId;
 
 var mail = require("./mailRequest");
+var mail = require("./facture");
 
 
 
@@ -36,7 +37,8 @@ router.get('/', async (req, res) => {
         const db = client.db(dbName);
         const col = db.collection('Client');
         var find = await col.find().toArray();
-        console.log(find);
+        var data2= await col.distinct("_id");
+        //var cc = IdClient();
         res.send(find);
         client.close();
     } catch (err) {

@@ -142,6 +142,10 @@ router.put('/Prestataire/:id', async (req, res) => {
         console.log(err.stack);
     }
 });
+
+
+
+
 /* - Récupération des informations sur un prestataire - */
 router.get('/:email/:mdp/connexionPrestataire', async (req, res) => {
     try {
