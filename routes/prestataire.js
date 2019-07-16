@@ -191,6 +191,25 @@ router.delete('/:email/supprimerPrestataire', async (req, res) => {
         console.log(err.stack);
     }
 });
-
+router.get('/getPrestataireById/:id', async (req, res) => {
+    try {
+        // Connection URL
+        const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+        // Database Name
+        const dbName = 'spareAPI';
+        const client = new MongoClient(url);
+        var id = req.params.id;
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('Prestataire');
+        var find = await col.find({_id: ObjectId(id)}).toArray();
+        //console.log(find);
+        res.send(find);
+        client.close();
+    } catch (err) {
+        //this will eventually be handled by your error handling middleware
+        console.log(err.stack);
+    }
+});
 
 module.exports = router;

@@ -17,6 +17,8 @@ var usersRouter = require('./routes/users');
 
 
 
+
+
 var app = express();
 
 // view engine setup
@@ -29,14 +31,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/factureUser', factureRouter);
+app.use('/paiment', usersRouter);
+app.use('/facture', factureRouter);
 app.use('/mail', mailRouter);
 app.use('/admin', adminRouter);
 app.use('/mission', missionRouter);
-app.use('/service', serviceRouter);
+app.use('/services', serviceRouter);
 app.use('/client', clientRouter);
+
 app.use('/prestataire', prestataireRouter);
 
 

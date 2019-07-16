@@ -27,7 +27,7 @@ router.get('/buy' , ( req , res ) => {
       "payment_method": "paypal"
     },
     "redirect_urls": {
-      "return_url": "http://127.0.0.1:3000/success",
+      "return_url": "http://127.0.0.1:3000/paiment/success",
       "cancel_url": "http://127.0.0.1:3000/err"
     },
     "transactions": [{
@@ -38,11 +38,12 @@ router.get('/buy' , ( req , res ) => {
       "description": " a book on mean stack "
     }]
   }
+
   createPay( payment )
       .then( ( transaction ) => {
         var links = transaction.links;
         var counter = links.length;
-        while( counter -- ) {
+        while( counter-- ) {
           if ( links[counter].method == 'REDIRECT') {
             return res.redirect( links[counter].href )
           }
@@ -55,14 +56,15 @@ router.get('/buy' , ( req , res ) => {
 });
 
 
+
 router.get('/success' , (req ,res ) => {
   console.log(req.query);
-  res.redirect('/success.html');
+  res.redirect('../success.html');
 })
 
 router.get('/err' , (req , res) => {
   console.log(req.query);
-  res.redirect('/err.html');
+  res.redirect('err.html');
 })
 
 

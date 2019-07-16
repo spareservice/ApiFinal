@@ -11,9 +11,24 @@ var ObjectId = mongo.ObjectId;
 
 const MONGODB_URI = 'mongodb+srv://sivithu:caca@cluster0-abdkp.mongodb.net/test?retryWrites=true'
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+/* - Liste de tous les clients - */
+router.get('/ALLfacture', async (req, res) => {
+  try {
+    // Connection URL
+    const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+    // Database Name
+    const dbName = 'spareAPI';
+    const client = new MongoClient(url);
+    await client.connect();
+    const db = client.db(dbName);
+    const col = db.collection('Factrure');
+    var find = await col.find().toArray();
+    res.send(find);
+    client.close();
+  } catch (err) {
+    //this will eventually be handled by your error handling middleware
+    console.log(err.stack);
+  }
 });
 
 

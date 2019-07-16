@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<br><br>
+<h1> Spare Service  </h1>
+<br><br>
+
+
+<h2> Merci d'avoir passé commande {{client.prenom}} </h2>
+<br>
+
+    <h3> Voici votre facture pour  le service de  {{prestataire.prenom}} <img src="domicile.png"/></h3>
+        <h4>  Total du prix  {{mission.prixTotal}} </h4>
+
+        <table>
+
+            <tr>
+                <th>client  </th>
+                <th>prenom </th>
+                <th>email  </th>
+                <th>prestataire</th>
+                <th>prenom</th>
+
+            </tr>
+            <tr>
+                <td>{{client.nom}}</td>
+                <td>{{client.prenom}}</td>
+                <td>{{client.email}}</td>
+                <td>{{prestataire.nom}}</td>
+                <td>{{prestataire.prenom}}</td>
+            </tr>
+        </table>
+<br>
+
+        <table>
+            <tr>
+                <th>date </th>
+                <th> heur </th>
+                <th>fin</th>
+                <th>prix</th>
+            <tr>
+
+            <tr>
+                <td>{{mission.debutDate}}</td>
+                <td>{{mission.debutHeure}}</td>
+                <td>{{mission.finHeure}}</td>
+                <td>{{mission.prixTotal}}</td>
+
+            </tr>
+
+
+
+        </table>
+
+<style>
+
+ body {
+        background: #685784;
+    }
+
+    h1{
+        color: #dd3322;
+        font-size: 40px;
+        text-align: center;
+        font-family:Arial Black;
+    }
+
+    h2{
+        font-size: 25px;
+         text-align: center;
+        font-family:Comic Sans MS;
+    }
+
+    h3{
+
+         color: #dd332;
+         text-align: center;
+        font-size: 24px;
+        font-family:Comic Sans MS;
+    }
+
+      h4{
+
+        color: #0bdd2b;
+         text-align: center;
+            font-size: 24px;
+            font-family:Comic Sans MS;
+        }
+
+    table {
+        border: medium solid #6495ed;
+        border-collapse: collapse;
+        width: 50%;
+    }
+    th {
+        font-family: monospace;
+        border: thin solid #ed3fc8;
+        width: 50%;
+        padding: 5px;
+        background-color: #D0E3FA;
+
+    }
+    td {
+        font-family: sans-serif;
+        border: thin solid #6495ed;
+        width: 50%;
+        padding: 5px;
+        text-align: center;
+        background-color: #ffffff;
+    }
+
+</style>
+<br><br><br>
+<br><br><br>
+
+
+<br><br><br>
+<h2> a votre service </h2>
+<br><br><br>
+
+
+</body>
+
+</html>
