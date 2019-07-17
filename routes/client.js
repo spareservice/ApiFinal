@@ -199,7 +199,6 @@ router.get('/:email/status', async (req, res) => {
         const dbName = 'spareAPI';
         const client = new MongoClient(url);
         var email = req.params.email;
-        var token = req.params.token;
         await client.connect();
         const db = client.db(dbName);
         const col = db.collection('Client');
@@ -213,5 +212,23 @@ router.get('/:email/status', async (req, res) => {
         console.log(err.stack);
     }
 });
+
+router.get('/getClientById/:idClient', async (req, res) => {
+    try {
+        const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+        const dbName = 'spareAPI';
+        const client = new MongoClient(url);
+        var idClient = req.params.idClient;
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('Client');
+        var find = await col.find({_id: ObjectId(idClient)}).toArray();
+        res.send(find);
+
+        client.close();
+    } catch (err) {
+        console.log(err.stack);
+    }
+})
 
 module.exports = router;

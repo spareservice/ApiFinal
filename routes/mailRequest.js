@@ -45,6 +45,7 @@ router.get('/:email/validate/Client', async function (req, res, next) {
 
 
 
+
 /* GET users validate. */
 router.get('/:email/validate/prestatire', async function (req, res, next) {
     var json;

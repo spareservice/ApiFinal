@@ -30,6 +30,8 @@ router.get('/:id_bill', async function (req, res, next) {
             res.end(buff,'binary');
         });
     })
+
+
 });
 
 module.exports = router;
