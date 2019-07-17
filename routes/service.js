@@ -55,8 +55,8 @@ router.get('/', async (req, res) => {
         await client.connect();
         const db = client.db(dbName);
         const col = db.collection('Service');
-        var find = await col.find().toArray();
-        // var find = await col.find({typeService: type}).toArray();
+        //var find = await col.find().toArray();
+        var find = await col.find({typeService: type}).toArray();
         //console.log(find);
         res.send(find);
         client.close();

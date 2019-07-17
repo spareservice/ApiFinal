@@ -12,8 +12,7 @@ var  clientRouter = require('./routes/client');
 var  missionRouter = require('./routes/mission');
 var  serviceRouter = require('./routes/service');
 var  prestataireRouter = require('./routes/prestataire');
-var usersRouter = require('./routes/users');
-
+var paypalRouter = require('./routes/paypal');
 
 
 
@@ -34,14 +33,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', indexRouter);
-app.use('/paiment', usersRouter);
 app.use('/facture', factureRouter);
 app.use('/mail', mailRouter);
 app.use('/admin', adminRouter);
 app.use('/mission', missionRouter);
 app.use('/services', serviceRouter);
 app.use('/client', clientRouter);
-
+app.use('/paiment', paypalRouter);
 app.use('/prestataire', prestataireRouter);
 
 

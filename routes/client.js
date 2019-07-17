@@ -47,6 +47,28 @@ router.get('/', async (req, res) => {
     }
 });
 
+/* - Rècupère les annonces du client - */
+router.get('/allAnnonce/:idClient', async (req, res) => {
+    try {
+        // Connection URL
+        const url = MONGODB_URI || 'mongodb://localhost:27017/spareAPI';
+        // Database Name
+        const dbName = 'spareAPI';
+        const client = new MongoClient(url);
+        await client.connect();
+        const db = client.db(dbName);
+        var idClient = req.params.idClient;
+        const col = db.collection('Annonce');
+        var find = await col.find({idClient : ObjectId(idClient)}).toArray();
+        console.log(find);
+        res.send(find);
+        client.close();
+    } catch (err) {
+        //this will eventually be handled by your error handling middleware
+        console.log(err.stack);
+    }
+})
+
 /* - Création d'un client - */
 router.post('/:nom/:prenom/:email/:mdp/:tel/ajoutClient', async (req, res) => {
     try {
